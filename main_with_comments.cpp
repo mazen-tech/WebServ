@@ -15,7 +15,8 @@ int main() {
 
     // creating socket
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (server_fd == 0) {
+    //there should be -1 insted of 0, bcs the -1 means that it fails
+    if (server_fd == -1) {
         std::cerr << "Nie udało się utworzyć gniazda\n";
         return -1;
     }
@@ -24,6 +25,7 @@ int main() {
     // jponieck:: tried to comment this line and program still works. The function below
     // is changing the default sokcet config , most important are SO_REUSEADDR and SO_REUSEPORT
     // because it allows server to handle multiple processes on the same address
+    // Also the chat bot said that we should not use the |, better is to call that func two times
     setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
 
     // server configuration
