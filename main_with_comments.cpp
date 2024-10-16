@@ -42,7 +42,7 @@ int main() {
     std::cout << "Server listening on port 8080\n";
 
     // accept connection
-    // possibly here id a good place to fork child process 
+    // possibly here is a good place to fork child process 
     new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen);
     
     if (new_socket < 0) {
@@ -54,11 +54,12 @@ int main() {
     read(new_socket, buffer, 1024);
     std::cout << "Odebrano żądanie:\n" << buffer << std::endl;
 
+    // strange string - but it is legal in C to write string like this "something""something else"  important tu use \r\n between STATUS LINE, HEADER LINE, EMPTY LINE, BODY
     const char *http_response =
     "HTTP/1.1 200 OK\r\n"
     "Content-Type: text/html\r\n"
     "Content-Length: 40\r\n"
-    "\n"
+    "\r\n"
     "<h1>Hello World :) </h1>";
 
     send(new_socket, http_response, strlen(http_response), 0);
