@@ -42,6 +42,7 @@ int main() {
     std::cout << "Server listening on port 8080\n";
 
     // accept connection
+    // possibly here id a good place to fork child process 
     new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen);
     
     if (new_socket < 0) {
