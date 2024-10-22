@@ -10,3 +10,8 @@
 ## Tasks to start with 
 * Building a default configration 
 </p>server configuration listens on port e.g8080, with custom error pages, supports multiple HTTP methods(READ / GIT / POST etc...), enables CGI for Python/bash scripts, and redirects.</p>
+
+* Configration file.cpp
+* Configration file.hpp
+* Server Configration.cpp
+* Server Configration.hpp
