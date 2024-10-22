@@ -16,6 +16,6 @@
 * Configration file.hpp
 * Parsing the configration file .cpp / .hpp (Parses and processes the raw configuration data)
 
-# step 2 (after bulding the )
+# step 2 (after bulding the configration system)
 * Server Configration.cpp (Represents the parsed server configurations as objects)
 * Server Configration.hpp
