@@ -14,7 +14,7 @@
 * Configration.conf  (configuration file that the web server reads and uses to determine its behavior)
 * Configration file.cpp (Handles reading the raw configuration file)
 * Configration file.hpp
-* Parsing the configration file .cpp / .hpp
+* Parsing the configration file .cpp / .hpp (Parses and processes the raw configuration data)
 
 # step 2 (after bulding the )
 * Server Configration.cpp
