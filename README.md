@@ -9,4 +9,4 @@
 
 ## Tasks to start with 
 * Building a default configration 
-</p>server configuration listens on port 8002, serves docs/fusion_web/ with custom error pages, supports multiple HTTP methods, enables CGI for Python/bash scripts, and redirects.</p>
+</p>server configuration listens on port e.g8080, serves docs/fusion_web/ with custom error pages, supports multiple HTTP methods(READ / GIT / POST etc...), enables CGI for Python/bash scripts, and redirects.</p>
