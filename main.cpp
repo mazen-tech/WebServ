@@ -21,22 +21,28 @@ int main() {
     }
 
     // socket configuration
+    // jponieck:: tried to comment this line and program still works. The function below
+    // is changing the default sokcet config , most important are SO_REUSEADDR and SO_REUSEPORT
+    // because it allows server to handle multiple processes on the same address
     setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
 
     // server configuration
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(8080);  // Port 80 dla HTTP
+    address.sin_family = AF_INET; // meand address type IPv4
+    address.sin_addr.s_addr = INADDR_ANY; // assigns address (ex localhost) don't know how to change it
+    address.sin_port = htons(8080);  //port number - hotons converts 8080 to apropriate format
 
     // bind socket to address
-    bind(server_fd, (struct sockaddr *)&address, sizeof(address));
+    bind(server_fd, (struct sockaddr *)&address, sizeof(address)); // casting sockaddr_it to sockaddr .. what for? should we care?
 
     // listen
-    listen(server_fd, 3);
+    listen(server_fd, 3); // 3 ist the number of connections in queue , we can change this number
+    // accept will execute the firs one id we want more connections to be handled we have to use accept several times
+    // I asked gpt if theese 3 request will be executed one by one and i got interesting answer (see below)*
 
     std::cout << "Server listening on port 8080\n";
 
     // accept connection
+    // possibly here is a good place to fork child process 
     new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen);
     
     if (new_socket < 0) {
@@ -48,11 +54,12 @@ int main() {
     read(new_socket, buffer, 1024);
     std::cout << "Odebrano żądanie:\n" << buffer << std::endl;
 
+    // strange string - but it is legal in C to write string like this "something""something else"  important tu use \r\n between STATUS LINE, HEADER LINE, EMPTY LINE, BODY
     const char *http_response =
     "HTTP/1.1 200 OK\r\n"
     "Content-Type: text/html\r\n"
     "Content-Length: 40\r\n"
-    "\n"
+    "\r\n"
     "<h1>Hello World :) </h1>";
 
     send(new_socket, http_response, strlen(http_response), 0);
@@ -65,3 +72,23 @@ int main() {
 
     return 0;
 }
+
+// *When using the accept() function, connections are handled sequentially, not in parallel. This means that accept() will handle one connection at a time.
+
+// How does accept() work?
+// Each call to accept() retrieves one connection from the queue of pending connections (determined by the backlog value set in listen()).
+// The server must call accept() for every incoming connection. When a client tries to connect, if there's space in the backlog queue, the connection is placed in the queue.
+// accept() waits for a connection to be available in the queue, then accepts it. If no connection is pending, accept() blocks until a new connection request is made.
+// Sequential handling:
+// If the backlog is set to 3 (as in listen(server_fd, 3);), the server can have up to 3 pending connections, but accept() must be called individually for each connection.
+// If there are three connections in the queue, accept() must be called three times—once for each connection.
+// How to handle multiple connections simultaneously?
+// To handle multiple connections in parallel, you need additional mechanisms:
+
+// Threads: The server can create a new thread for each connection after calling accept(), allowing concurrent handling of multiple clients.
+
+// fork(): You can use fork() to create a new process to handle each connection.
+
+// Non-blocking I/O: Using techniques like select(), poll(), or epoll(), the server can handle multiple connections in one process/thread without blocking.
+
+// This way, you can accept and process multiple connections concurrently.
