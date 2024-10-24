@@ -1,0 +1,54 @@
+/* Ustawienia ogólne dla całego dokumentu */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Stylizacja nagłówka h1 */
+h1 {
+    color: #414040;
+    text-align: center;
+    font-size: 2.5em;
+}
+
+/* Stylizacja nagłówka h2 */
+h2 {
+    color: #666;
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+/* Stylizacja paragrafów */
+p {
+    font-size: 1.2em;
+    line-height: 1.6;
+    text-align: center;
+    color: #555;
+}
+
+/* Stylizacja linków */
+a {
+    color: #1a73e8;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Stylizacja przycisków */
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
