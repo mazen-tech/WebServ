@@ -109,7 +109,7 @@ int main() {
                     // Ustawienie QUERY_STRING w zmiennej środowiskowej
 
 // IMPORTANT!
-// DOES NOT WORK - LOOK AT LINE 122 - IT WORKS THAT WAY
+// DOES NOT WORK - LOOK AT LINE 123 - IT WORKS THAT WAY
                     setenv("QUERY_STRING", query_string + 12, 1);  // 12 to długość "/cgi-bin/"
 
                     // Uruchomienie skryptu CGI
