@@ -11,24 +11,35 @@ def insert_env(line):
     return part_one + middle + part_two
 
 def render(page):
-    print("Status: 200 success")
-    print("Content-Type: text/html\n\n")
-    with open(f"{os.getcwd()}/cgi/html/{page}") as source:
+    # print("Status: 200 success")
+    # print("Content-Type: text/html\n\n")
+    with open(f"{os.getcwd()}/src/cgi/html/{page}") as source:
         for line in source:
             if ('{{' in line and '}}' in line):
                 line = insert_env(line)
             print(line)
 
-pages = os.listdir(f'{os.getcwd()}/cgi/html')
-print(pages)
+# Odpowiedz musi sie zaczynac od tego co jest w print w 24 linijce a pozniej body
+
+print(                        "HTTP/1.1 200 OK\r\n"
+                        "Content-Type: text/html\r\n"
+                        "Content-Length: 4000\r\n"
+                        "Connection: close\r\n"
+                        "\r\n"
+                        "<h1>Welcome to WebServer</h1>"
+                        "<h1>Welcome to WebServer</h1>")
+
+pages = os.listdir(f'{os.getcwd()}/src/cgi/html')
+# print(pages)
 page = sys.argv[1]
-print(page)
+# print(page)
 if page in pages:
-    print(f"page {page} in pages")
-    status = "Status: 200 success"
+    # print(f"page {page} in pages")
+    # status = "Status: 200 success"
     render(page)
 else:
     print("page not in pages")
+
 
 # query_string = os.getenv("QUERY_STRING", "")
 # content_length = int(os.getenv("CONTENT_LENGTH", 0))

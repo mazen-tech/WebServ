@@ -8,6 +8,10 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <sys/wait.h>
+#include <netinet/in.h>
+
+void met_get();
 
 class Read_conf
 {
@@ -37,5 +41,12 @@ public:
     OTHER = 5
     };
 };
+
+class server
+{
+    public:
+        server();
+        
+} ;
 
 #endif
