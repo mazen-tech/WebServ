@@ -110,13 +110,13 @@ int main() {
 
 // IMPORTANT!
 // DOES NOT WORK - LOOK AT LINE 123 - IT WORKS THAT WAY
-                    setenv("QUERY_STRING", query_string + 12, 1);  // 12 to długość "/cgi-bin/"
+                    setenv("QUERY_STRING", query_string , 1);  // 12 to długość "/cgi-bin/"
 
                     // Uruchomienie skryptu CGI
                     // const char *args[] = {"./cgi/mycgi.py", nullptr};  // Ścieżka do skryptu
                     // execvp(args[0], (char *const *)args);
                     const char *python_path = "/usr/bin/python3";
-                    const char *script_path = "/home/jponieck/jponieck/WebServ/src/cgi/mycgi.py";
+                    const char *script_path = "./src/cgi/mycgi.py";
                     const char *page = "index.html";
 // PASS REQUESTED PAGE (eg. index.html) AS ARG
                     const char *args[] = {python_path, script_path, page, NULL};

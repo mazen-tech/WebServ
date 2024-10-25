@@ -13,13 +13,13 @@ def insert_env(line):
 def render(page):
     print("Status: 200 success")
     print("Content-Type: text/html\n\n")
-    with open(f"{os.getcwd()}/cgi/html/{page}") as source:
+    with open(f"{os.getcwd()}/src/cgi/html/{page}") as source:
         for line in source:
             if ('{{' in line and '}}' in line):
                 line = insert_env(line)
             print(line)
 
-pages = os.listdir(f'{os.getcwd()}/cgi/html')
+pages = os.listdir(f'{os.getcwd()}/src/cgi/html')
 print(pages)
 page = sys.argv[1]
 print(page)
