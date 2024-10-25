@@ -1,11 +1,4 @@
-#include <iostream>
-#include <string.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <cstdlib>
+#include "../header/read_conf.hpp"
 
 int main() {
     int server_fd, new_socket;
@@ -95,7 +88,7 @@ int main() {
 
             delete[] post_data;
         } else if (strstr(buffer, "GET /") != nullptr) {
-            // Przykład dla metody GET (dane przekazywane przez QUERY_STRING)
+                // Przykład dla metody GET (dane przekazywane przez QUERY_STRING)
             char *query_string = strstr(buffer, "GET /");
             if (query_string != nullptr) {
                 // Pobieranie wartości QUERY_STRING z URI
@@ -112,11 +105,11 @@ int main() {
                 // Utworzenie procesu potomnego
                 pid_t pid = fork();
                 if (pid == 0) {
-                      // Proces potomny
+                    // Proces potomny
                     // Ustawienie QUERY_STRING w zmiennej środowiskowej
 
-// IMPORTANT!
-// DOES NOT WORK - LOOK AT LINE 123 - IT WORKS THAT WAY
+            // IMPORTANT!
+            // DOES NOT WORK - LOOK AT LINE 123 - IT WORKS THAT WAY
                     setenv("QUERY_STRING", query_string , 1);  // 12 to długość "/cgi-bin/"
                     close(pipefd[0]); // Zamykamy czytanie w child
 
@@ -129,15 +122,18 @@ int main() {
                     const char *python_path = "/usr/bin/python3";
                     const char *script_path = "./src/cgi/mycgi.py";
                     const char *page = "index.html";
-// PASS REQUESTED PAGE (eg. index.html) AS ARG
+            // PASS REQUESTED PAGE (eg. index.html) AS ARG
                     const char *args[] = {python_path, script_path, page, NULL};
                     char *envp[] = {
-                        (char *)"REQUEST_METHOD=bambino",
-                         NULL};
+                        (char *)"REQUEST_METHOD=GET",
+                        (char *)"CONTENT_TYPE=text/html",
+                        (char *)"QUERY_STRING=param1=value1&param2=value2",
+                        NULL
+                    };
                     execve(python_path, (char* const*)args, envp);
                     // hahaha
                     std::cout << "Nie tym razem frajerze! \n";
-// IMPORTANT END!
+            // IMPORTANT END!
 
                     // Jeśli execvp się nie powiedzie
                     exit(EXIT_FAILURE);
