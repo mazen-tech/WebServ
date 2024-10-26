@@ -2,6 +2,7 @@ import os
 import sys
 
 status = "Status: 500 server error"
+qs = os.getenv("QUERY_STRING", "")
 
 def insert_env(line):
     part_one = line.split('{{')[0]
@@ -10,35 +11,58 @@ def insert_env(line):
     middle = os.getenv(middle, "")
     return part_one + middle + part_two
 
-def render(page):
-    # print("Status: 200 success")
-    # print("Content-Type: text/html\n\n")
-    with open(f"{os.getcwd()}/src/cgi/html/{page}") as source:
+def render(page, dir):
+    with open(f"src/cgi/{dir}/{page}") as source:
         for line in source:
             if ('{{' in line and '}}' in line):
                 line = insert_env(line)
             print(line)
 
-# Odpowiedz musi sie zaczynac od tego co jest w print w 24 linijce a pozniej body
+def count_size(page, dir):
+    all = 0
+    body = ''
+    with open(f"src/cgi/{dir}/{page}") as source:
+        for line in source:
+            if ('{{' in line and '}}' in line):
+                line = insert_env(line)
+            all += len(line.encode('utf-8'))
+            body += line
+    return all, body
 
-print(                        "HTTP/1.1 200 OK\r\n"
-                        "Content-Type: text/html\r\n"
-                        "Content-Length: 4000\r\n"
-                        "Connection: close\r\n"
-                        "\r\n"
-                        "<h1>Welcome to WebServer</h1>"
-                        "<h1>Welcome to WebServer</h1>")
-
-pages = os.listdir(f'{os.getcwd()}/src/cgi/html')
-# print(pages)
+html_pages = os.listdir(f'{os.getcwd()}/src/cgi/html')
+css_pages = os.listdir(f'{os.getcwd()}/src/cgi/style')
 page = sys.argv[1]
-# print(page)
-if page in pages:
-    # print(f"page {page} in pages")
-    # status = "Status: 200 success"
-    render(page)
+
+size = 0
+if 'html' in page and page in html_pages:
+    size, body = count_size(page, 'html')
+elif 'css' in page and page in css_pages:
+    size, body = count_size(page, 'style')
 else:
     print("page not in pages")
+    exit()
+
+if 'css' in qs:
+    size = len(body.encode('utf-8'))
+    page = 'style.css'
+    print(              "HTTP/1.1 200 OK\r\n"
+                        "Content-Type: text/css\r\n"
+                        "Content-Length: 847\r\n"
+                        "Connection: close\r\n"
+                        "\r\n")
+else:
+    size = len(body.encode('utf-8'))
+    print(                  "HTTP/1.1 200 OK\r\n"
+                            "Content-Type: text/html\r\n"
+                            # f"Content-Length: {size}\r\n"
+                            "Content-Length: 1000\r\n"
+                            "Connection: close\r\n"
+                            "\r\n")
+
+if 'html' in page and page in html_pages:
+    render(page, 'html')
+elif 'css' in page and page in css_pages:
+    render(page, 'style')
 
 
 # query_string = os.getenv("QUERY_STRING", "")

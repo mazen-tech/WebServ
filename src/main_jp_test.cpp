@@ -41,7 +41,7 @@ int main() {
 
         // Odbieranie danych od przeglądarki
         read(new_socket, buffer, 1024);
-        std::cout << "Odebrano żądanie:\n" << buffer << std::endl;
+        // std::cout << "Odebrano żądanie:\n" << buffer << std::endl;
         // Sprawdzanie, czy to jest żądanie CGI (np. POST)
         if (strstr(buffer, "POST /") != nullptr) {
             // Znalezienie Content-Length (długość danych POST)
@@ -99,7 +99,7 @@ int main() {
                     return 1;
                 }
 
-                char *end_of_uri = strchr(query_string, ' ');
+                char *end_of_uri = strchr(query_string, '\n');
                 *end_of_uri = '\0';  // Odcinanie URI
 
                 // Utworzenie procesu potomnego
@@ -124,10 +124,11 @@ int main() {
                     const char *page = "index.html";
             // PASS REQUESTED PAGE (eg. index.html) AS ARG
                     const char *args[] = {python_path, script_path, page, NULL};
+                    std::string qs = "QUERY_STRING=" + (std::string)query_string;
                     char *envp[] = {
                         (char *)"REQUEST_METHOD=GET",
                         (char *)"CONTENT_TYPE=text/html",
-                        (char *)"QUERY_STRING=param1=value1&param2=value2",
+                        (char *)qs.c_str(),
                         NULL
                     };
                     execve(python_path, (char* const*)args, envp);
@@ -147,7 +148,7 @@ int main() {
                     ssize_t bytesRead = read(pipefd[0], buffer, sizeof(buffer) - 1);
                     if (bytesRead > 0) {
                         buffer[bytesRead] = '\0'; // Dodanie null-terminatora
-                        std::cout << "Parent otrzymał wiadomość:\n " << buffer;
+                        std::cout << "Parent otrzymał wiadomość:\n " << buffer << "\n";
                     close(pipefd[0]); // Zamykamy czytanie w parent
 
                     // Zwracanie odpowiedzi HTTP
