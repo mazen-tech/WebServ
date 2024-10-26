@@ -31,33 +31,35 @@ def count_size(page, dir):
 
 html_pages = os.listdir(f'{os.getcwd()}/src/cgi/html')
 css_pages = os.listdir(f'{os.getcwd()}/src/cgi/style')
-page = sys.argv[1]
+# page = sys.argv[1]
+page = qs.split('/')[1].split("?")[0].replace(" HTTP", "")
+# print(f"argument is \n{page}")
 
-size = 0
-if 'html' in page and page in html_pages:
-    size, body = count_size(page, 'html')
-elif 'css' in page and page in css_pages:
-    size, body = count_size(page, 'style')
-else:
-    print("page not in pages")
-    exit()
+# size = 0
+# if 'html' in page and page in html_pages:
+#     size, body = count_size(page, 'html')
+# elif 'css' in page and page in css_pages:
+#     size, body = count_size(page, 'style')
+# else:
+#     print("page not in pages")
+#     exit()
 
-if 'css' in qs:
-    size = len(body.encode('utf-8'))
-    page = 'style.css'
-    print(              "HTTP/1.1 200 OK\r\n"
-                        "Content-Type: text/css\r\n"
-                        "Content-Length: 847\r\n"
-                        "Connection: close\r\n"
-                        "\r\n")
-else:
-    size = len(body.encode('utf-8'))
-    print(                  "HTTP/1.1 200 OK\r\n"
-                            "Content-Type: text/html\r\n"
-                            # f"Content-Length: {size}\r\n"
-                            "Content-Length: 1000\r\n"
-                            "Connection: close\r\n"
-                            "\r\n")
+# if 'css' in qs:
+#     size = len(body.encode('utf-8'))
+#     page = 'style.css'
+#     print(              "HTTP/1.1 200 OK\r\n"
+#                         "Content-Type: text/css\r\n"
+#                         "Content-Length: 847\r\n"
+#                         "Connection: close\r\n"
+#                         "\r\n")
+# else:
+#     size = len(body.encode('utf-8'))
+#     print(                  "HTTP/1.1 200 OK\r\n"
+#                             "Content-Type: text/html\r\n"
+#                             # f"Content-Length: {size}\r\n"
+#                             "Content-Length: 1000\r\n"
+#                             "Connection: close\r\n"
+#                             "\r\n")
 
 if 'html' in page and page in html_pages:
     render(page, 'html')
