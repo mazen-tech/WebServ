@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Janek</title>
+</head>
+<body>
+    <h1>Janek</h1>
+    <p>
+        Janek's birthday is 21.11<br>
+    </p>
+    <form method="get" action="bday_share.html">
+        <input type="hidden" name="hb" value="2024-11-21">
+        <label for="un">Type your name</label>
+        <input type="text" name="user_name" id="un">
+        <label for="ub">Insert your 2024's birthday</label>
+        <input type="date" name="user_bday" id="ub" required>
+        <input type="submit" value="Calculate" class="button">
+    </form>
+    <p>{{QUERY_STRING}}</p>
+</body>
+</html>

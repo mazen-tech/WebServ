@@ -164,7 +164,7 @@ int main() {
                     std::string http_response = "HTTP/1.1 200 OK\r\n" + content_type + content_length + "Connection: close\r\n\r\n" + buffer;
                     std::cout << http_response << "\n";
                     send(new_socket, http_response.c_str(), strlen(http_response.c_str()), 0);
-                    std::cout << "Odpowiedź CGI GET została wysłana do klienta\n";
+                    // std::cout << "Odpowiedź CGI GET została wysłana do klienta\n";
                     }
                 }
             }
