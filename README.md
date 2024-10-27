@@ -19,3 +19,11 @@
 # step 2 (after bulding the configration system)
 * Server Configration.cpp (Represents the parsed server configurations as objects)
 * Server Configration.hpp
+
+# some tasks about CGI
+* only *.py files should go to CGI
+* html, css, jpg should be treated as static files and served directly from source file
+* *.py should be all dynamic pages (with get parameters and post data)
+* don't know about uploaded files - should it be handled by CGI or by server only?
+
+
