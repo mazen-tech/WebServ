@@ -15,10 +15,12 @@ def parse_args(qs):
 qs = os.getenv("QUERY_STRING", "")
 parse_args(qs)
 page = qs.split('/')[1].split("?")[0].replace(" HTTP", "")
+if len(page) == 0:
+    page = "index.html"
 
 def find_party():
-    host_bday = datetime.strptime(os.getenv("hb"), "%Y-%m-%d").date()
-    user_bday = datetime.strptime(os.getenv("user_bday"), "%Y-%m-%d").date()
+    host_bday = datetime.strptime(os.getenv("your_bday"), "%Y-%m-%d").date()
+    user_bday = datetime.strptime(os.getenv("friend_bday"), "%Y-%m-%d").date()
     if host_bday > user_bday:
         distance = (host_bday - user_bday).days
         if distance > 183:

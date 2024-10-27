@@ -23,7 +23,7 @@ h2 {
 /* Stylizacja paragrafów */
 p {
     font-size: 1.2em;
-    line-height: 1.6;
+    line-height: 2;
     text-align: center;
     color: #555;
 }
@@ -53,8 +53,16 @@ button:hover, .button:hover {
     background-color: #45a049;
 }
 
+.pink {
+    background-color: #672062;
+}
+
+.pink:hover {
+    background-color: #35124e;
+}
+
 form {
-    max-width: 600px;       /* Maksymalna szerokość formularza */
+    max-width: 800px;       /* Maksymalna szerokość formularza */
     margin: 20px auto;      /* Wycentrowanie formularza na stronie */
     padding: 20px;          /* Wewnętrzny odstęp */
     border: 1px solid #ccc; /* Szary obramowanie */
