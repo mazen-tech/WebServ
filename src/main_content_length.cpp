@@ -142,7 +142,7 @@ int main() {
             std::cout << query_string << std::endl;
             if (find_file("./src", file_name, file_path))
             {
-                if (file_name.find(".py") != std::string::npos) {
+                if (file_name.find(".tpl") != std::string::npos) {
                     // Obsługa skryptu CGI
                     int pipefd[2];
                     if (pipe(pipefd) == -1) {

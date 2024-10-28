@@ -1,5 +1,5 @@
 CC = c++
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -no-pie
 # SRCS = src/main.cpp
 # SRCS = src/main_jp_test.cpp
 SRCS = src/main_content_length.cpp
