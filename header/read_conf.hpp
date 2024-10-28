@@ -10,6 +10,7 @@
 #include <string>
 #include <sys/wait.h>
 #include <netinet/in.h>
+#include <dirent.h>
 
 void met_get();
 
