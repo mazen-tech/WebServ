@@ -2,6 +2,8 @@ import os
 import sys
 from datetime import datetime, timedelta
 
+print("cgi")
+
 def parse_args(qs):
     args_string = qs.split('/')[1].split(' HTTP')[0]
     if '?' not in args_string:
@@ -17,7 +19,8 @@ parse_args(qs)
 page = qs.split('/')[1].split("?")[0].replace(" HTTP", "")
 if len(page) == 0:
     page = "index.html"
-print(page)
+
+print(f"page recived {page}")
 
 def find_party():
     host_bday = datetime.strptime(os.getenv("your_bday"), "%Y-%m-%d").date()
