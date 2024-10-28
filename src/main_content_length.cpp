@@ -41,7 +41,6 @@ int main() {
 
         // Odbieranie danych od przeglądarki
         read(new_socket, buffer, 1024);
-        // std::cout << "Odebrano żądanie:\n" << buffer << std::endl;
         // Sprawdzanie, czy to jest żądanie CGI (np. POST)
 
         // if (strstr(buffer, "POST /") != nullptr) {
