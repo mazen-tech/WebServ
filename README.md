@@ -27,7 +27,7 @@
 * don't know about uploaded files - should it be handled by CGI or by server only?
 
 # what I need from server to handle CGI right
-* file name (eg index.py) it sould be passed as argument for CGI 
+* file name (eg index.py) it sould be passed as argument for CGI
 * get args (string is ok, like "?name=jan&hobby=bike") best idea to put it in env_var
 * post body redirected to STDIN
 

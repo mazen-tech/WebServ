@@ -17,6 +17,7 @@ parse_args(qs)
 page = qs.split('/')[1].split("?")[0].replace(" HTTP", "")
 if len(page) == 0:
     page = "index.html"
+print(page)
 
 def find_party():
     host_bday = datetime.strptime(os.getenv("your_bday"), "%Y-%m-%d").date()
