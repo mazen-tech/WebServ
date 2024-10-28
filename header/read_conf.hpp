@@ -12,7 +12,9 @@
 #include <netinet/in.h>
 #include <dirent.h>
 
-void met_get();
+int met_get(char *buffer, int new_socket);
+bool find_file(const std::string& dir, const std::string& target, std::string& found_path);
+
 
 class Read_conf
 {
