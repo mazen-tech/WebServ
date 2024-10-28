@@ -156,7 +156,7 @@ int main() {
                         close(pipefd[0]);  // Zamykamy odczytanie w dziecku
                         dup2(pipefd[1], STDOUT_FILENO);  // Przekierowanie `stdout` na zapis potoku
                         close(pipefd[1]);
-                    std::cout << "j ";
+                    // std::cout << "j ";
                         // Ustawianie zmiennej QUERY_STRING dla skryptu CGI
                     const char *python_path = "/usr/bin/python3";
                     const char *script_path = "./src/cgi/mycgi.py";
@@ -164,7 +164,7 @@ int main() {
                     // PASS REQUESTED PAGE (eg. index.html) AS ARG
                     const char *args[] = {python_path, script_path, page, NULL};
                     std::string qs = "QUERY_STRING=" + (std::string)query_string;
-                    std::cout << qs << std::endl;
+                    // std::cout << qs << std::endl;
                     char *envp[] = {
                         (char *)"REQUEST_METHOD=GET",
                         (char *)"CONTENT_TYPE=text/html",

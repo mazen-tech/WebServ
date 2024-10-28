@@ -2,26 +2,22 @@ import os
 import sys
 from datetime import datetime, timedelta
 
-print("cgi !! !!")
-exit()
-
 def parse_args(qs):
-    args_string = qs.split('/')[1].split(' HTTP')[0]
-    if '?' not in args_string:
+    if '?' not in qs:
         return
-    args_string = args_string.split('?')[1]
+    args_string = qs.split('?')[1]
     args = args_string.split('&')
     for a in args:
         a = a.split('=')
         os.environ[a[0]] = a[1]
 
 qs = os.getenv("QUERY_STRING", "")
-print(qs)
-exit()
 parse_args(qs)
-page = qs.split('/')[1].split("?")[0].replace(" HTTP", "")
+page = qs.split("?")[0].replace(" HTTP", "")
 if len(page) == 0:
     page = "index.html"
+
+page = qs.split('?')[0]
 
 def find_party():
     host_bday = datetime.strptime(os.getenv("your_bday"), "%Y-%m-%d").date()
@@ -42,7 +38,7 @@ def find_party():
         best_date += timedelta(days=365)
     return str(best_date)
 
-if page == 'bday_share.html':
+if page == 'bday_share.tpl':
     os.environ['shared_bd'] = find_party()
 html_pages = os.listdir(f'{os.getcwd()}/src/cgi/html')
 css_pages = os.listdir(f'{os.getcwd()}/src/cgi/style')
@@ -73,7 +69,7 @@ def count_size(page, dir):
     return all, body
 
 
-if 'html' in page and page in html_pages:
+if 'tpl' in page and page in html_pages:
     render(page, 'html')
 elif 'css' in page and page in css_pages:
     render(page, 'style')
