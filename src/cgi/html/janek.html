@@ -11,6 +11,21 @@
     <p>
         Janek is responsible for the CGI operation in this project.
     </p>
+    <form method="post" action="payment.py">
+        <h3>Money Donation for Janek</h3>
+        <label for="ccn">your credit card number</label>
+        <input type="text" id="ccn" name="credit_card_number">
+        <label for="ccd">your credit card expiration date</label>
+        <input type="date" id="ccd" name="credit_card_date">
+        <label for="cco">your name</label>
+        <input type="text" id="cco" name="credit_card_owner">
+        <label for="am">Donation ammount</label>
+        <input type="number" id="am" name="ammount">
+        <label for="cf">I confirm I want to donate money</label>
+        <input type="checkbox" name="confirmation" id="cf">
+        <input type="submit" class="button" value="submit">
+        <br>
+    </form>
     <p><a href="index.html">take me home</a></p>
 </body>
 </html>

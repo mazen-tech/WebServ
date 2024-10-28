@@ -20,7 +20,7 @@ int met_get(char *buffer, int new_socket)
     }
 
     std::string file_path;
-    if (file_name.find(".tpl") != std::string::npos)
+    if (file_name.find(".py") != std::string::npos)
     {
         // Obsługa skryptu CGI
         int pipefd[2];
@@ -39,7 +39,7 @@ int met_get(char *buffer, int new_socket)
             // Ustawianie zmiennej QUERY_STRING dla skryptu CGI
         const char *python_path = "/usr/bin/python3";
         const char *script_path = "./src/cgi/mycgi.py";
-        const char *page = "index.html";
+        const char *page = file_name.c_str();
         // PASS REQUESTED PAGE (eg. index.html) AS ARG
         const char *args[] = {python_path, script_path, page, NULL};
         std::string qs = "QUERY_STRING=" + (std::string)query_string;

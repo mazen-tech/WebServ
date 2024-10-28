@@ -74,6 +74,7 @@ form {
 form input[type="text"],
 form input[type="email"],
 form input[type="date"],
+form input[type="number"],
 form textarea {
     width: 100%;            /* Ustawienie pełnej szerokości dla pól tekstowych */
     padding: 10px;          /* Wewnętrzny odstęp */

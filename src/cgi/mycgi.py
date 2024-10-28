@@ -13,11 +13,7 @@ def parse_args(qs):
 
 qs = os.getenv("QUERY_STRING", "")
 parse_args(qs)
-page = qs.split("?")[0].replace(" HTTP", "")
-if len(page) == 0:
-    page = "index.html"
-
-page = qs.split('?')[0]
+page = sys.argv[1].replace('.py', '.html')
 
 def find_party():
     host_bday = datetime.strptime(os.getenv("your_bday"), "%Y-%m-%d").date()
@@ -25,20 +21,20 @@ def find_party():
     if host_bday > user_bday:
         distance = (host_bday - user_bday).days
         if distance > 183:
-            best_date = host_bday + timedelta(days=int(distance/2))
+            best_date = host_bday + timedelta(days=int((365 - distance)/2))
         else:
             best_date = host_bday - timedelta(days=int(distance/2))
     else:
         distance = (user_bday - host_bday).days
         if distance > 183:
-            best_date = user_bday + timedelta(days=int(distance/2))
+            best_date = user_bday + timedelta(days=int((365 - distance)/2))
         else:
             best_date = user_bday - timedelta(days=int(distance/2))
     if best_date < datetime.today().date():
         best_date += timedelta(days=365)
     return str(best_date)
 
-if page == 'bday_share.tpl':
+if page == 'bday_share.html':
     os.environ['shared_bd'] = find_party()
 html_pages = os.listdir(f'{os.getcwd()}/src/cgi/html')
 css_pages = os.listdir(f'{os.getcwd()}/src/cgi/style')
@@ -69,7 +65,7 @@ def count_size(page, dir):
     return all, body
 
 
-if 'tpl' in page and page in html_pages:
+if 'html' in page and page in html_pages:
     render(page, 'html')
 elif 'css' in page and page in css_pages:
     render(page, 'style')
