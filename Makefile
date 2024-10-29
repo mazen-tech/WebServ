@@ -2,7 +2,7 @@ CC = c++
 CFLAGS = -Wall -Wextra -Werror
 # SRCS = src/main.cpp
 # SRCS = src/main_jp_test.cpp
-SRCS = src/main_content_length.cpp src/method_get.cpp src/find_file.cpp src/read_conf.cpp
+SRCS = src/main.cpp src/method_get.cpp src/find_file.cpp src/read_conf.cpp
 
 OBJDIR = obj
 OBJS = $(SRCS:src/%.cpp=$(OBJDIR)/%.o)
