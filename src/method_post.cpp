@@ -111,5 +111,6 @@ int met_post(char *buffer, int new_socket)
     }
 
     delete[] post_data;
+    memset(buffer, 0, strlen(buffer));
     return (0);
 }
