@@ -1,0 +1,99 @@
+/* Ustawienia ogólne dla całego dokumentu */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Stylizacja nagłówka h1 */
+h1 {
+    color: #414040;
+    text-align: center;
+    font-size: 2.5em;
+}
+
+/* Stylizacja nagłówka h2 */
+h2 {
+    color: #666;
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+/* Stylizacja paragrafów */
+p {
+    font-size: 1.2em;
+    line-height: 2;
+    text-align: center;
+    color: #555;
+}
+
+/* Stylizacja linków */
+a {
+    color: #1a73e8;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Stylizacja przycisków */
+button, .button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover, .button:hover {
+    background-color: #45a049;
+}
+
+.pink {
+    background-color: #672062;
+}
+
+.pink:hover {
+    background-color: #35124e;
+}
+
+form {
+    max-width: 800px;       /* Maksymalna szerokość formularza */
+    margin: 20px auto;      /* Wycentrowanie formularza na stronie */
+    padding: 20px;          /* Wewnętrzny odstęp */
+    border: 1px solid #ccc; /* Szary obramowanie */
+    border-radius: 8px;     /* Zaokrąglenie rogów */
+    background-color: #f9f9f9; /* Jasne tło */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lekki cień */
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="date"],
+form textarea {
+    width: 100%;            /* Ustawienie pełnej szerokości dla pól tekstowych */
+    padding: 10px;          /* Wewnętrzny odstęp */
+    margin-bottom: 15px;    /* Dolny odstęp między polami */
+    border: 1px solid #ccc; /* Szary obramowanie */
+    border-radius: 4px;     /* Zaokrąglenie rogów */
+    box-sizing: border-box; /* Włączenie `box-sizing` dla pełnej szerokości */
+    font-size: 16px;
+}
+
+form button {
+    background-color: #007bff;  /* Kolor przycisku */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+form button:hover {
+    background-color: #0056b3;  /* Ciemniejszy kolor przy najechaniu */
+}

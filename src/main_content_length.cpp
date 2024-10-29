@@ -1,11 +1,4 @@
-#include <iostream>
-#include <string.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <cstdlib>
+#include "../header/read_conf.hpp"
 
 int main() {
     int server_fd, new_socket;
@@ -48,8 +41,7 @@ int main() {
 
         // Odbieranie danych od przeglądarki
         read(new_socket, buffer, 1024);
-        std::cout << "Odebrano żądanie:\n" << buffer << std::endl;
-
+        // std::cout << "Odebrano żądanie:\n" << buffer << std::endl;
         // Sprawdzanie, czy to jest żądanie CGI (np. POST)
         if (strstr(buffer, "POST /") != nullptr) {
             // Znalezienie Content-Length (długość danych POST)
@@ -87,7 +79,7 @@ int main() {
                 const char *http_response =
                     "HTTP/1.1 200 OK\r\n"
                     "Content-Type: text/html\r\n"
-                    "Content-Length: 40\r\n"
+                    "Content-Length: 400\r\n"
                     "\n"
                     "<h1>Wynik skryptu CGI</h1>";
                 send(new_socket, http_response, strlen(http_response), 0);
@@ -96,38 +88,84 @@ int main() {
 
             delete[] post_data;
         } else if (strstr(buffer, "GET /") != nullptr) {
-            // Przykład dla metody GET (dane przekazywane przez QUERY_STRING)
+                // Przykład dla metody GET (dane przekazywane przez QUERY_STRING)
             char *query_string = strstr(buffer, "GET /");
             if (query_string != nullptr) {
                 // Pobieranie wartości QUERY_STRING z URI
-                char *end_of_uri = strchr(query_string, ' ');
-                *end_of_uri = '\0';  // Odcinanie URI
+                
+                int pipefd[2];
+                if (pipe(pipefd) == -1) {
+                    std::cerr << "Błąd przy tworzeniu pipe." << std::endl;
+                    return 1;
+                }
 
+                char *end_of_uri = strchr(query_string, '\n');
+                *end_of_uri = '\0';  // Odcinanie URI
+                int type = 0;
+                if (strstr(query_string, "css"))
+                    type = 1;
                 // Utworzenie procesu potomnego
                 pid_t pid = fork();
-                if (pid == 0) {  // Proces potomny
+                if (pid == 0) {
+                    // Proces potomny
                     // Ustawienie QUERY_STRING w zmiennej środowiskowej
-                    setenv("QUERY_STRING", query_string + 12, 1);  // 12 to długość "/cgi-bin/"
 
+            // IMPORTANT!
+            // DOES NOT WORK - LOOK AT LINE 123 - IT WORKS THAT WAY
+                    setenv("QUERY_STRING", query_string , 1);  // 12 to długość "/cgi-bin/"
+                    close(pipefd[0]); // Zamykamy czytanie w child
+
+                    // Przekierowanie `stdout` na koniec zapisu potoku
+                    dup2(pipefd[1], STDOUT_FILENO);
+                    close(pipefd[1]);
                     // Uruchomienie skryptu CGI
-                    const char *args[] = {"./cgi/mycgi.py", nullptr};  // Ścieżka do skryptu
-                    execvp(args[0], (char *const *)args);
+                    // const char *args[] = {"./cgi/mycgi.py", nullptr};  // Ścieżka do skryptu
+                    // execvp(args[0], (char *const *)args);
+                    const char *python_path = "/usr/bin/python3";
+                    const char *script_path = "./src/cgi/mycgi.py";
+                    const char *page = "index.html";
+            // PASS REQUESTED PAGE (eg. index.html) AS ARG
+                    const char *args[] = {python_path, script_path, page, NULL};
+                    std::string qs = "QUERY_STRING=" + (std::string)query_string;
+                    char *envp[] = {
+                        (char *)"REQUEST_METHOD=GET",
+                        (char *)"CONTENT_TYPE=text/html",
+                        (char *)qs.c_str(),
+                        NULL
+                    };
+                    execve(python_path, (char* const*)args, envp);
+                    // hahaha
+                    std::cout << "Nie tym razem frajerze! \n";
+            // IMPORTANT END!
 
                     // Jeśli execvp się nie powiedzie
                     exit(EXIT_FAILURE);
                 } else {  // Proces rodzica
                     // Oczekiwanie na zakończenie procesu CGI
                     waitpid(pid, nullptr, 0);
+                    close(pipefd[1]); // Zamykamy zapis w parent
+
+                    // Odbieranie danych z potoku
+                    char buffer[100000];
+                    ssize_t bytesRead = read(pipefd[0], buffer, sizeof(buffer) - 1);
+                    if (bytesRead > 0) {
+                        buffer[bytesRead] = '\0'; // Dodanie null-terminatora
+                        // std::cout << "!!!rozmiar danych to!!!: " << strlen(buffer) << std::endl;
+                        // std::cout << "Parent otrzymał wiadomość:\n " << buffer << "\n";
+                    close(pipefd[0]); // Zamykamy czytanie w parent
 
                     // Zwracanie odpowiedzi HTTP
-                    const char *http_response =
-                        "HTTP/1.1 200 OK\r\n"
-                        "Content-Type: text/html\r\n"
-                        "Content-Length: 40\r\n"
-                        "\n"
-                        "<h1>Wynik skryptu CGI GET</h1>";
-                    send(new_socket, http_response, strlen(http_response), 0);
-                    std::cout << "Odpowiedź CGI GET została wysłana do klienta\n";
+                    std::string content_type;
+                    if (type == 1)
+                        content_type = "Content-Type: text/css\r\n";
+                    else
+                        content_type = "Content-Type: text/html\r\n";
+                    std::string content_length = "Content-Length: " + std::to_string(strlen(buffer)) + "\r\n";
+                    std::string http_response = "HTTP/1.1 200 OK\r\n" + content_type + content_length + "Connection: close\r\n\r\n" + buffer;
+                    std::cout << http_response << "\n";
+                    send(new_socket, http_response.c_str(), strlen(http_response.c_str()), 0);
+                    // std::cout << "Odpowiedź CGI GET została wysłana do klienta\n";
+                    }
                 }
             }
         } else {
