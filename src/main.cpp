@@ -54,6 +54,13 @@ int main() {
         // std::cout << strstr(buffer, "POST /") << std::endl;
         if (strstr(buffer, "POST /") != NULL)
         {
+            int pipe_fd[2];
+            if (pipe(pipe_fd) == -1) {
+                std::cerr << "Pipe failed" << std::endl;
+                return 1;
+            }
+
+
             // Znalezienie Content-Length (długość danych POST)
             char *content_length_str = strstr(buffer, "Content-Length:");
             int content_length = 0;
@@ -68,12 +75,15 @@ int main() {
             std::cout << line << std::endl;
             // // Utworzenie procesu potomnego dla skryptu CGI
             pid_t pid = fork();
+            
             if (pid == 0)
             {  // Proces potomny
-
+                close(pipe_fd[1]);
+                dup2(pipe_fd[0], STDIN_FILENO);
+                close(pipe_fd[0]);
                 // Przekazywanie danych POST przez standardowe wejście (stdin)
-                dup2(STDOUT_FILENO, STDIN_FILENO);
-                std::cout << line << EOF << std::endl;
+                // dup2(STDOUT_FILENO, STDIN_FILENO);
+                // std::cout << line << EOF << std::endl;
 
                 const char *python_path = "/usr/bin/python3";
                 const char *script_path = "./src/cgi/mycgi.py";
@@ -90,7 +100,12 @@ int main() {
                 };
                 execve(python_path, (char* const*)args, envp);
                 exit(EXIT_FAILURE);
-            } else {  // Proces rodzica
+            } else {
+                close(pipe_fd[0]);
+                std::string data = "Hello from C++";
+                write(pipe_fd[1], line.c_str(), line.size());
+                close(pipe_fd[1]);
+                  // Proces rodzica
                 // Oczekiwanie na zakończenie procesu CGI
                 waitpid(pid, nullptr, 0);
 

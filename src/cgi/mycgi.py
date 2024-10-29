@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 data = sys.stdin.read()  # Odczyt całej zawartości ze stdin
 print("Wprowadzone dane:")
 print(data)
+print("Wprowadzone dane end")
 exit()
 
 def parse_args(qs):
