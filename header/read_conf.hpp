@@ -14,7 +14,7 @@
 
 int met_get(char *buffer, int new_socket);
 bool find_file(const std::string& dir, const std::string& target, std::string& found_path);
-
+int met_post(char *buffer, int new_socket);
 
 class Read_conf
 {

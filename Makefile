@@ -2,7 +2,7 @@ CC = c++
 CFLAGS = -Wall 
 # SRCS = src/main.cpp
 # SRCS = src/main_jp_test.cpp
-SRCS = src/main.cpp src/method_get.cpp src/find_file.cpp src/read_conf.cpp
+SRCS = src/main.cpp src/method_get.cpp src/find_file.cpp src/read_conf.cpp src/method_post.cpp 
 
 OBJDIR = obj
 OBJS = $(SRCS:src/%.cpp=$(OBJDIR)/%.o)
@@ -10,6 +10,7 @@ OBJS = $(SRCS:src/%.cpp=$(OBJDIR)/%.o)
 EXEC = WebServer
 
 all: $(EXEC)
+	./WebServer
 
 $(EXEC): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
