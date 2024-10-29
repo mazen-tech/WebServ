@@ -2,6 +2,11 @@ import os
 import sys
 from datetime import datetime, timedelta
 
+data = sys.stdin.read()  # Odczyt całej zawartości ze stdin
+print("Wprowadzone dane:")
+print(data)
+exit()
+
 def parse_args(qs):
     if '?' not in qs:
         return

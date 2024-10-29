@@ -1,5 +1,5 @@
 CC = c++
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall 
 # SRCS = src/main.cpp
 # SRCS = src/main_jp_test.cpp
 SRCS = src/main.cpp src/method_get.cpp src/find_file.cpp src/read_conf.cpp

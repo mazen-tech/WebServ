@@ -47,56 +47,69 @@ int main() {
 
         // Odbieranie danych od przeglądarki
         read(new_socket, buffer, 1024);
+        // std::cout << buffer << std::endl;
+        // char *line = strstr(buffer, "\r\n\r\n");
+        // std::cout << buffer << std::endl;
         // Sprawdzanie, czy to jest żądanie CGI (np. POST)
+        // std::cout << strstr(buffer, "POST /") << std::endl;
+        if (strstr(buffer, "POST /") != NULL)
+        {
+            // Znalezienie Content-Length (długość danych POST)
+            char *content_length_str = strstr(buffer, "Content-Length:");
+            int content_length = 0;
+            if (content_length_str != nullptr) {
+                sscanf(content_length_str, "Content-Length: %d", &content_length);
+            }
+            // // Tworzenie bufora na dane POST
+            char *post_data = new char[content_length + 1]();
+            // read(new_socket, post_data, content_length);
+            std::cout << "post!!!!" << std::endl;
+            std::string line = strstr(buffer, "\r\n\r\n");
+            std::cout << line << std::endl;
+            // // Utworzenie procesu potomnego dla skryptu CGI
+            pid_t pid = fork();
+            if (pid == 0)
+            {  // Proces potomny
 
-        // if (strstr(buffer, "POST /") != nullptr) {
-        //     // Znalezienie Content-Length (długość danych POST)
-        //     char *content_length_str = strstr(buffer, "Content-Length:");
-        //     int content_length = 0;
-        //     if (content_length_str != nullptr) {
-        //         sscanf(content_length_str, "Content-Length: %d", &content_length);
-        //     }
+                // Przekazywanie danych POST przez standardowe wejście (stdin)
+                dup2(STDOUT_FILENO, STDIN_FILENO);
+                std::cout << line << EOF << std::endl;
 
-        //     // Tworzenie bufora na dane POST
-        //     char *post_data = new char[content_length + 1]();
-        //     read(new_socket, post_data, content_length);
+                const char *python_path = "/usr/bin/python3";
+                const char *script_path = "./src/cgi/mycgi.py";
+                // const char *page = file_name.c_str();
+                // PASS REQUESTED PAGE (eg. index.html) AS ARG
+                const char *args[] = {python_path, script_path, NULL};
+                // std::string qs = "QUERY_STRING=" + (std::string)query_string;
+                // std::cout << qs << std::endl;
+                char *envp[] = {
+                    (char *)"REQUEST_METHOD=GET",
+                    (char *)"CONTENT_TYPE=text/html",
+                    // (char *)qs.c_str(),
+                    NULL
+                };
+                execve(python_path, (char* const*)args, envp);
+                exit(EXIT_FAILURE);
+            } else {  // Proces rodzica
+                // Oczekiwanie na zakończenie procesu CGI
+                waitpid(pid, nullptr, 0);
 
-        //     // Utworzenie procesu potomnego dla skryptu CGI
-        //     pid_t pid = fork();
-        //     if (pid == 0) {  // Proces potomny
-        //         // Ustawienie zmiennych środowiskowych dla skryptu CGI
-        //         setenv("REQUEST_METHOD", "POST", 1);
-        //         setenv("CONTENT_LENGTH", std::to_string(content_length).c_str(), 1);
+                // Zwracanie odpowiedzi HTTP (np. wyniku skryptu CGI)
+                const char *http_response =
+                    "HTTP/1.1 200 OK\r\n"
+                    "Content-Type: text/html\r\n"
+                    "Content-Length: 400\r\n"
+                    "\n"
+                    "<h1>Wynik skryptu CGI</h1>";
+                send(new_socket, http_response, strlen(http_response), 0);
+                std::cout << "Odpowiedź CGI została wysłana do klienta\n";
+            }
 
-        //         // Przekazywanie danych POST przez standardowe wejście (stdin)
-        //         dup2(new_socket, STDIN_FILENO);
-
-        //         // Uruchomienie skryptu CGI
-        //         const char *args[] = {"/path/to/cgi-bin/script.cgi", nullptr};  // Ścieżka do skryptu
-        //         execvp(args[0], (char *const *)args);
-
-        //         // Jeśli execvp się nie powiedzie
-        //         exit(EXIT_FAILURE);
-        //     } else {  // Proces rodzica
-        //         // Oczekiwanie na zakończenie procesu CGI
-        //         waitpid(pid, nullptr, 0);
-
-        //         // Zwracanie odpowiedzi HTTP (np. wyniku skryptu CGI)
-        //         const char *http_response =
-        //             "HTTP/1.1 200 OK\r\n"
-        //             "Content-Type: text/html\r\n"
-        //             "Content-Length: 400\r\n"
-        //             "\n"
-        //             "<h1>Wynik skryptu CGI</h1>";
-        //         send(new_socket, http_response, strlen(http_response), 0);
-        //         std::cout << "Odpowiedź CGI została wysłana do klienta\n";
-        //     }
-
-        //     delete[] post_data;
-        // }
+            delete[] post_data;
+        }
 
         // Sprawdzanie żądania GET
-        if (strstr(buffer, "GET /") != nullptr)
+        else if (strstr(buffer, "GET /") != nullptr)
         {
             if (met_get(buffer, new_socket))
                 return (1);
