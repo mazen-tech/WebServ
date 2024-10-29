@@ -19,12 +19,13 @@ bool find_file(const std::string& dir, const std::string& target, std::string& f
 class Read_conf
 {
 private:
-    std::string path;
+    std::string path; //document root path
+    int port;
     size_t size;
 
 public:
     Read_conf();
-    Read_conf(const std::string path);
+    Read_conf(const std::string &configFile = "/mnt/c/Users/miche/OneDrive/Desktop/cpp/WebServ/configurations/config.conf");
     ~Read_conf();
 
     static int get_path_type(std::string const path);
@@ -34,7 +35,10 @@ public:
 
     std::string getPath();
     int getSize();
+    int getPort();
 
+    //new method
+    std::string getDocumentRoot();
     enum
     {
     REGULAR_FILE = 1,
@@ -44,12 +48,5 @@ public:
     OTHER = 5
     };
 };
-
-class server
-{
-    public:
-        server();
-        
-} ;
 
 #endif

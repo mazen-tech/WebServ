@@ -1,16 +1,41 @@
 #include "../header/read_conf.hpp"
 
-Read_conf::Read_conf() : size(0) 
+/*Read_conf::Read_conf() : size(0) 
 {
 
+}*/
+
+/*Read_conf::Read_conf(std::string const &configFile) : path(configFile), size(0)
+{
+
+}*/
+
+#include "../header/read_conf.hpp"
+
+// Default constructor with reordered initializer list
+Read_conf::Read_conf() : path("/default/path"), port(8080), size(0) {}
+
+// Parameterized constructor with config file path
+Read_conf::Read_conf(const std::string& configFile) : path("/default/path"), port(8080), size(0) {
+    std::ifstream file(configFile);
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open configuration file at " << configFile << std::endl;
+        return;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        std::string key, value;
+        if (std::getline(iss, key, '=') && std::getline(iss, value)) {
+            if (key == "port") port = std::stoi(value);
+            else if (key == "document_root") path = value;
+        }
+    }
 }
+
 
 Read_conf::~Read_conf()
-{
-
-}
-
-Read_conf::Read_conf(std::string const path) : path(path), size(0)
 {
 
 }
@@ -62,6 +87,10 @@ F_OK (0): Check for existence of the file.
 + access function to check the calling process's permission for the file
 */
 
+std::string Read_conf::getDocumentRoot() {
+    return path;
+}
+
 std::string Read_conf::getPath()
 {
     return (this->path);
@@ -70,6 +99,11 @@ std::string Read_conf::getPath()
 int Read_conf::getSize()
 {
     return (this->size);
+}
+
+int Read_conf::getPort()
+{
+    return port;
 }
 
 int Read_conf::check_File_accessibility(std::string const path, int permission)
