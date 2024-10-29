@@ -11,6 +11,7 @@ std::string f_name ( std::string request )
         if (end_pos != std::string::npos)
         {
             std::string filename = request.substr(pos, end_pos - pos);
+            return filename;
         }
     }
     return (filename);
@@ -22,6 +23,7 @@ int met_post(char *buffer, int new_socket)
     int pipe_from_python[2];
 
     std::string filename = f_name(buffer);
+
     if (pipe(pipe_fd) == -1 || pipe(pipe_from_python) == -1)
     {
         std::cerr << "Pipe failed" << std::endl;
@@ -97,6 +99,16 @@ int met_post(char *buffer, int new_socket)
         "Content-Length: " + std::to_string(count) + "\r\n"
         "Connection: close\r\n\r\n" + std::string(buffer);
         send(new_socket, http_response.c_str(), http_response.size(), 0);
+
+        // Zwracanie odpowiedzi HTTP (np. wyniku skryptu CGI)
+        // const char *http_response =
+        //     "HTTP/1.1 200 OK\r\n"
+        //     "Content-Type: text/html\r\n"
+        //     "Content-Length: 400\r\n"
+        //     "\n"
+        //     "<h1>Wynik skryptu CGI</h1>";
+        // send(new_socket, http_response, strlen(http_response), 0);
+        std::cout << "Odpowiedź CGI została wysłana do klienta\n";
     }
 
     delete[] post_data;

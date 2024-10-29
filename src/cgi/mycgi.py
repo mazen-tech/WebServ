@@ -3,10 +3,6 @@ import sys
 from datetime import datetime, timedelta
 
 data = sys.stdin.read()  # Odczyt całej zawartości ze stdin
-print("Wprowadzone dane:")
-print(data)
-print("Wprowadzone dane end")
-exit()
 
 def parse_args(qs):
     if '?' not in qs:
@@ -17,9 +13,17 @@ def parse_args(qs):
         a = a.split('=')
         os.environ[a[0]] = a[1]
 
+def parse_post_args(data):
+    args = data.split('&')
+    for a in args:
+        a = a.split('=')
+        os.environ[a[0].strip()] = a[1]
+
 qs = os.getenv("QUERY_STRING", "")
 parse_args(qs)
+parse_post_args(data)
 page = sys.argv[1].replace('.py', '.html')
+
 
 def find_party():
     host_bday = datetime.strptime(os.getenv("your_bday"), "%Y-%m-%d").date()
