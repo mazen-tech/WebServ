@@ -1,9 +1,28 @@
 #include "../header/read_conf.hpp"
 
+std::string f_name ( std::string request )
+{
+    std::size_t pos = request.find("POST /");
+    std::string filename;
+    if (pos != std::string::npos)
+    {
+        pos += 6;
+        std::size_t end_pos = request.find(' ', pos);
+        if (end_pos != std::string::npos)
+        {
+            std::string filename = request.substr(pos, end_pos - pos);
+        }
+    }
+    return (filename);
+}
+
 int met_post(char *buffer, int new_socket)
 {
     int pipe_fd[2];
     int pipe_from_python[2];
+
+    std::string filename = f_name(buffer);
+
     if (pipe(pipe_fd) == -1 || pipe(pipe_from_python) == -1)
     {
         std::cerr << "Pipe failed" << std::endl;
@@ -21,7 +40,6 @@ int met_post(char *buffer, int new_socket)
     char *post_data = new char[content_length + 1]();
     // read(new_socket, post_data, content_length);
     std::string line = strstr(buffer, "\r\n\r\n");
-    std::cout << line << std::endl;
     // // Utworzenie procesu potomnego dla skryptu CGI
     pid_t pid = fork();
     
@@ -40,9 +58,10 @@ int met_post(char *buffer, int new_socket)
 
         const char *python_path = "/usr/bin/python3";
         const char *script_path = "./src/cgi/mycgi.py";
+        const char *filename_cstr = filename.c_str();
         // const char *page = file_name.c_str();
         // PASS REQUESTED PAGE (eg. index.html) AS ARG
-        const char *args[] = {python_path, script_path, NULL};
+        const char *args[] = {python_path, script_path, filename_cstr, NULL};
         // std::string qs = "QUERY_STRING=" + (std::string)query_string;
         // std::cout << qs << std::endl;
         char *envp[] = {
