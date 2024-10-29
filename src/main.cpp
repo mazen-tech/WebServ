@@ -55,7 +55,8 @@ int main() {
         if (strstr(buffer, "POST /") != NULL)
         {
             int pipe_fd[2];
-            if (pipe(pipe_fd) == -1) {
+            int pipe_from_python[2];
+            if (pipe(pipe_fd) == -1 || pipe(pipe_from_python) == -1) {
                 std::cerr << "Pipe failed" << std::endl;
                 return 1;
             }
@@ -70,7 +71,6 @@ int main() {
             // // Tworzenie bufora na dane POST
             char *post_data = new char[content_length + 1]();
             // read(new_socket, post_data, content_length);
-            std::cout << "post!!!!" << std::endl;
             std::string line = strstr(buffer, "\r\n\r\n");
             std::cout << line << std::endl;
             // // Utworzenie procesu potomnego dla skryptu CGI
@@ -79,8 +79,12 @@ int main() {
             if (pid == 0)
             {  // Proces potomny
                 close(pipe_fd[1]);
+                close(pipe_from_python[0]);
+
                 dup2(pipe_fd[0], STDIN_FILENO);
+                dup2(pipe_from_python[1], STDOUT_FILENO);
                 close(pipe_fd[0]);
+                close(pipe_from_python[1]);
                 // Przekazywanie danych POST przez standardowe wejście (stdin)
                 // dup2(STDOUT_FILENO, STDIN_FILENO);
                 // std::cout << line << EOF << std::endl;
@@ -102,21 +106,36 @@ int main() {
                 exit(EXIT_FAILURE);
             } else {
                 close(pipe_fd[0]);
-                std::string data = "Hello from C++";
+                close(pipe_from_python[1]);
                 write(pipe_fd[1], line.c_str(), line.size());
                 close(pipe_fd[1]);
                   // Proces rodzica
                 // Oczekiwanie na zakończenie procesu CGI
                 waitpid(pid, nullptr, 0);
 
+                char buffer[1024];
+                ssize_t count = read(pipe_from_python[0], buffer, sizeof(buffer) - 1);
+                if (count > 0) {
+                    buffer[count] = '\0';
+                }
+
+                // Zamknij potok po odczytaniu danych
+                close(pipe_from_python[0]);
+
+                std::string http_response = "HTTP/1.1 200 OK\r\n"
+                "Content-Type: text/html\r\n"
+                "Content-Length: " + std::to_string(count) + "\r\n"
+                "Connection: close\r\n\r\n" + std::string(buffer);
+                send(new_socket, http_response.c_str(), http_response.size(), 0);
+
                 // Zwracanie odpowiedzi HTTP (np. wyniku skryptu CGI)
-                const char *http_response =
-                    "HTTP/1.1 200 OK\r\n"
-                    "Content-Type: text/html\r\n"
-                    "Content-Length: 400\r\n"
-                    "\n"
-                    "<h1>Wynik skryptu CGI</h1>";
-                send(new_socket, http_response, strlen(http_response), 0);
+                // const char *http_response =
+                //     "HTTP/1.1 200 OK\r\n"
+                //     "Content-Type: text/html\r\n"
+                //     "Content-Length: 400\r\n"
+                //     "\n"
+                //     "<h1>Wynik skryptu CGI</h1>";
+                // send(new_socket, http_response, strlen(http_response), 0);
                 std::cout << "Odpowiedź CGI została wysłana do klienta\n";
             }
 
