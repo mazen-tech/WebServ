@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "../header/read_conf.hpp"
 #include "../header/Main_SerConfig.hpp"
 
@@ -48,5 +48,5 @@ public:
 		};
 
     
-};
+};*/
 

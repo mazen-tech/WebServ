@@ -18,5 +18,6 @@ int ft_stoi(std::string str)
 //in progress
 std::string errorCodeStatus(short SC)
 {
+    (void)SC;
     return ("undifined");
 }

@@ -1,6 +1,10 @@
 #ifndef READ_CONF_HPP
 #define READ_CONF_HPP
 
+#define GREEN "\033[32m"
+#define RED "\033[31m"
+#define RESET "\033[0m"
+
 #include <iostream>
 #include <unistd.h>
 #include <sys/stat.h>

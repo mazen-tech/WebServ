@@ -14,7 +14,7 @@ Main_SerConfig::Main_SerConfig()
     this->_index = "";
     this->_autoindex = false;
     this->_clint_max_body_size = 0; // need to define MAX CONTECT LENGTH
-    this->initErrorPages();
+    //this->initErrorPages();
 }
 
 Main_SerConfig::Main_SerConfig(const Main_SerConfig &copy)
@@ -211,7 +211,7 @@ std::string const &Main_SerConfig::getPathErrorPage(short code)
     return (it->second);
 }
 
-size_t const Main_SerConfig::getClintMaxBodySize()
+size_t Main_SerConfig::getClintMaxBodySize()
 {
     return (this->_clint_max_body_size);
 }

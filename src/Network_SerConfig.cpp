@@ -1,12 +1,12 @@
-#include "../header/Network_SerConfig.hpp"
+/*#include "../header/Network_SerConfig.hpp"
 #include <arpa/inet.h>
 
-/*
+
     Network_SerConfig();
     Network_SerConfig(const Network_SerConfig &copy);
     Network_SerConfig &operator=(const Network_SerConfig &cp);
     ~Network_SerConfig();
-*/
+
 
 Network_SerConfig::Network_SerConfig()
 {
@@ -70,10 +70,10 @@ void Network_SerConfig::setListen_FD(int fd)
     this->_listen_fd = fd;
 }
 
-/*
+
     uint16_t const &getPort();
     in_addr_t const &getHost();
-*/
+
 
 uint16_t const &Network_SerConfig::getPort()
 {
@@ -90,12 +90,12 @@ int Network_SerConfig::getListen_FD()
     return (this->_listen_fd);
 }
 
-/*
+
     bool checkLocations() const;
     void initErrorPages(void); 
     bool isValidHost(std::string host) const;
     bool isValideErrorPage();
-*/
+
 void Network_SerConfig::initErrorPages(void)
 {
     std::vector<int> errorCodes = {301, 302, 400, 401,
@@ -126,3 +126,4 @@ bool Network_SerConfig::isValideErrorPage()
     return (true);
 }
 
+*/

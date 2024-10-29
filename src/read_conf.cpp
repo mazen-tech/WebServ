@@ -1,18 +1,5 @@
 #include "../header/read_conf.hpp"
 
-/*Read_conf::Read_conf() : size(0) 
-{
-
-}*/
-
-/*Read_conf::Read_conf(std::string const &configFile) : path(configFile), size(0)
-{
-
-}*/
-
-#include "../header/read_conf.hpp"
-
-// Default constructor with reordered initializer list
 Read_conf::Read_conf() : path("/default/path"), port(8080), size(0) {}
 
 // Parameterized constructor with config file path
@@ -41,17 +28,6 @@ Read_conf::~Read_conf()
 }
 
 //#METHODS#
-
-/*
-static int getPath(std::string const path);
-static int checkFile(std::string const path, int mode);
-static int checkFileReadability(std::string const path, std::string const index);
-std::string readFile(std::string path);
-
-std::string getPath();
-int getSize();
-*/
-
 int Read_conf::get_path_type(std::string const path)
 {
     struct stat buf;

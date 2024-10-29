@@ -1,16 +1,50 @@
 #include "../header/read_conf.hpp"
+#include "../header/Main_SerConfig.hpp"
+#include "../header/server.hpp"
 
 int main() {
-    Read_conf config("config.conf");
+    // Load the configuration from the config file
+    Read_conf config("/mnt/c/Users/miche/OneDrive/Desktop/cpp/webtest/WebServ/configurations/config.conf");
+    if (config.getPort() != 8080) { // error need fixed 
+        std::cerr << "Configuration not loaded properly. Exiting...\n";
+        return -1;
+    }
 
-    int server_fd, new_socket;
+    // Create the server instance and start it
+    Server server(config.getPort());
+    server.start();
+
+    return 0;
+}
+
+
+
+
+/*int main() {
+
+    Read_conf config("/mnt/c/Users/miche/OneDrive/Desktop/cpp/webtest/WebServ/configurations/config.conf");
+    if (config.getPort() != 8080) { // default port
+        std::cerr << "Configuration not loaded properly. Exiting...\n";
+        return -1;
+    }
+
+
+    //Main_SerConfig serverConfig;
+    //serverConfig.setServerName("MyServer"); // You might want to retrieve this from your config
+    //serverConfig.setRoot("/var/www/html"); // Adjust accordingly
+    //serverConfig.setIndex("index.html"); // Adjust accordingly
+    //serverConfig.setClintMaxBodySize("1024"); // Adjust accordingly
+    //serverConfig.setAutoindex("off"); // Adjust accordingly 
+
+    int server_port = config.getPort();
+    int server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    int new_socket;
     struct sockaddr_in address;
     int opt = 1;
     int addrlen = sizeof(address);
     char buffer[1024] = {0};
 
     // Tworzenie gniazda
-    server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd == 0) {
         std::cerr << "Nie udało się utworzyć gniazda\n";
         return -1;
@@ -22,9 +56,15 @@ int main() {
     // Konfiguracja serwera
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(config.getPort());//htons(8080);
+    address.sin_port = htons(server_port);//8080
+
     // Bindowanie socketu
-    bind(server_fd, (struct sockaddr *)&address, sizeof(address));
+    //bind(server_fd, (struct sockaddr *)&address, sizeof(address));
+    if (bind (server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
+    {
+        std::cerr << "Bind Failed\n";
+        return -1;
+    }
 
     // Nasłuchiwanie
     //listen(server_fd, 3);
@@ -34,7 +74,7 @@ int main() {
         return (-1);
     }
 
-    std::cout << "Serwer nasłuchuje na porcie 8080\n";
+    std::cout << GREEN << "Serwer nasłuchuje na porcie ... " << RESET << "[" << server_port << "]" <<std::endl;
 
     while (true) {
         // Akceptowanie połączenia
@@ -43,57 +83,11 @@ int main() {
         if (new_socket < 0) {
             std::cerr << "Błąd połączenia\n";
             return -1;
+            //continue; // continue to listen the new connection
         }
 
         // Odbieranie danych od przeglądarki
         read(new_socket, buffer, 1024);
-        // Sprawdzanie, czy to jest żądanie CGI (np. POST)
-
-        // if (strstr(buffer, "POST /") != nullptr) {
-        //     // Znalezienie Content-Length (długość danych POST)
-        //     char *content_length_str = strstr(buffer, "Content-Length:");
-        //     int content_length = 0;
-        //     if (content_length_str != nullptr) {
-        //         sscanf(content_length_str, "Content-Length: %d", &content_length);
-        //     }
-
-        //     // Tworzenie bufora na dane POST
-        //     char *post_data = new char[content_length + 1]();
-        //     read(new_socket, post_data, content_length);
-
-        //     // Utworzenie procesu potomnego dla skryptu CGI
-        //     pid_t pid = fork();
-        //     if (pid == 0) {  // Proces potomny
-        //         // Ustawienie zmiennych środowiskowych dla skryptu CGI
-        //         setenv("REQUEST_METHOD", "POST", 1);
-        //         setenv("CONTENT_LENGTH", std::to_string(content_length).c_str(), 1);
-
-        //         // Przekazywanie danych POST przez standardowe wejście (stdin)
-        //         dup2(new_socket, STDIN_FILENO);
-
-        //         // Uruchomienie skryptu CGI
-        //         const char *args[] = {"/path/to/cgi-bin/script.cgi", nullptr};  // Ścieżka do skryptu
-        //         execvp(args[0], (char *const *)args);
-
-        //         // Jeśli execvp się nie powiedzie
-        //         exit(EXIT_FAILURE);
-        //     } else {  // Proces rodzica
-        //         // Oczekiwanie na zakończenie procesu CGI
-        //         waitpid(pid, nullptr, 0);
-
-        //         // Zwracanie odpowiedzi HTTP (np. wyniku skryptu CGI)
-        //         const char *http_response =
-        //             "HTTP/1.1 200 OK\r\n"
-        //             "Content-Type: text/html\r\n"
-        //             "Content-Length: 400\r\n"
-        //             "\n"
-        //             "<h1>Wynik skryptu CGI</h1>";
-        //         send(new_socket, http_response, strlen(http_response), 0);
-        //         std::cout << "Odpowiedź CGI została wysłana do klienta\n";
-        //     }
-
-        //     delete[] post_data;
-        // }
 
         // Sprawdzanie żądania GET
         if (strstr(buffer, "GET /") != nullptr)
@@ -123,3 +117,4 @@ int main() {
 
     return 0;
 }
+*/
